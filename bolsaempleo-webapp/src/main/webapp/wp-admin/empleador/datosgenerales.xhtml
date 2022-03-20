@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/template/layout.xhtml">
+	<ui:define name="css">
+		<style>
+</style>
+	</ui:define>
+	<ui:define name="title">Datos genearales - Actualización</ui:define>
+	<ui:define name="content">
+		<h:form id="frm" update="growl">
+			<p:growl id="growl" sticky="false" life="5000" showDetail="false"
+				autoUpdate="true" />
+			<div class="col-lg-6 col-md-12 col-sm-12 position-relative mb-4">
+				<div class="p-field">
+					<label class="form-label">RUC</label> <br /> <label>
+						#{datosGeneralesBean.empleador.ruc} </label>
+				</div>
+				<div class="p-field">
+					<p:outputLabel for="txtNombre" value="Nombre de la Empresa"
+						class="form-label" />
+					<p:inputText id="txtNombre" type="text" required="true"
+						requiredMessage="Ingrese Nombre de la empresa"
+						value="#{datosGeneralesBean.empleador.nombreEmpresa}"
+						style="text-transform: uppercase" converter="toUpperCaseConverter" />
+				</div>
+				<div class="p-field">
+					<p:outputLabel for="txtEmailEmpresa" value="Email Empresa"
+						class="form-label" />
+					<p:inputText id="txtEmailEmpresa" type="text" required="true"
+						requiredMessage="Ingrese Email"
+						value="#{datosGeneralesBean.empleador.emailEmpresa}"
+						style="text-transform: uppercase" converter="toUpperCaseConverter" />
+				</div>
+
+				<div class="p-field">
+					<p:outputLabel for="cmbProvincia" value="Residencia"
+						class="form-label" />
+					<p:selectOneMenu id="cmbProvincia" required="true"
+						requiredMessage="Provincia es obligatorio "
+						value="#{datosGeneralesBean.selectedProvincia}"
+						converter="entityConverter" style="width:100%;" dynamic="true">
+						<f:selectItem itemLabel="Seleccione" itemValue="#{null}"
+							noSelectionOption="true" />
+						<f:selectItems value="#{datosGeneralesBean.provincias}"
+							var="provincia" itemLabel="#{provincia.nombre}"
+							itemValue="#{provincia}" />
+					</p:selectOneMenu>
+
+					<p:selectOneMenu id="cmbCiudad" required="true"
+						requiredMessage="Ciudad es obligatorio "
+						value="#{datosGeneralesBean.selectedCiudad}"
+						converter="entityConverter" style="width:100%;"
+						disabled="#{datosGeneralesBean.selectedProvincia == null}">
+						<f:selectItem itemLabel="Seleccione" itemValue="#{null}"
+							noSelectionOption="true" />
+						<f:selectItems value="#{datosGeneralesBean.ciudades}" var="ciudad"
+							itemLabel="#{ciudad.nombre}" itemValue="#{ciudad}" />
+					</p:selectOneMenu>
+
+				</div>
+
+				<div class="p-field">
+					<p:outputLabel for="txtDireccion" value="Direccion"
+						class="form-label" />
+					<p:inputText id="txtDireccion" type="text" required="true"
+						requiredMessage="Ingrese una direccion"
+						value="#{datosGeneralesBean.empleador.direccionEmpresa}"
+						style="text-transform: uppercase" converter="toUpperCaseConverter" />
+				</div>
+				<div class="p-field">
+					<p:outputLabel for="txtTelefonoEmpresarial"
+						value="Telefono empresarial" class="form-label" />
+					<p:inputText id="txtTelefonoEmpresarial" type="text"
+						required="true" requiredMessage="Ingrese un numero telefonico"
+						value="#{datosGeneralesBean.empleador.telefonoEmpresa}"
+						style="text-transform: uppercase" converter="toUpperCaseConverter" />
+				</div>
+
+				<div class="p-field">
+					<p:panel id="pnlFoto" header="Logo">
+						<p:commandButton value="Subir Logo" type="button"
+							icon="pi pi-external-link" onclick="PF('dlgFoto').show()" />
+						<p:outputLabel rendered="#{not empty datosGeneralesBean.foto}"
+							style="width:100%;text-align:center;">
+							<img class="img-fluid"
+								src="data:image/png;base64,${datosGeneralesBean.foto}" />
+						</p:outputLabel>
+					</p:panel>
+				</div>
+
+				<div class="p-field">
+					<label class="form-label">DATOS DEL
+						ADMINISTRADO/REPRESENTANTE</label> <br />
+				</div>
+
+
+				<div class="p-field">
+					<p:outputLabel for="txtNombreRepresentante" value="Nombre"
+						class="form-label" />
+					<p:inputText id="txtNombreRepresentante" type="text"
+						required="true" requiredMessage="Ingrese un nombre"
+						value="#{datosGeneralesBean.empleador.nombreRepresentante}"
+						style="text-transform: uppercase" converter="toUpperCaseConverter" />
+				</div>
+				<div class="p-field">
+					<p:outputLabel for="txtApellidoRepresentante" value="Apellido"
+						class="form-label" />
+					<p:inputText id="txtApellidoRepresentante" type="text"
+						required="true" requiredMessage="Ingrese un nombre"
+						value="#{datosGeneralesBean.empleador.apellidoRepresentante}"
+						style="text-transform: uppercase" converter="toUpperCaseConverter" />
+				</div>
+				<div class="p-field">
+					<p:outputLabel for="txtTelefonoRepresentante" value="Telefono"
+						class="form-label" />
+					<p:inputText id="txtTelefonoRepresentante" type="text"
+						required="true" requiredMessage="Ingrese un nombre"
+						value="#{datosGeneralesBean.empleador.telefonoRepresentante}"
+						style="text-transform: uppercase" converter="toUpperCaseConverter" />
+				</div>
+				<div class="p-field">
+					<p:outputLabel for="txtEmailRepresentante" value="Email"
+						class="form-label" />
+					<p:inputText id="txtEmailRepresentante" type="text" required="true"
+						requiredMessage="Ingrese un nombre"
+						value="#{datosGeneralesBean.empleador.emailRepresentante}"
+						style="text-transform: uppercase" converter="toUpperCaseConverter" />
+				</div>
+				<div class="p-field" style="text-align: center;"></div>
+				<br /> <br />
+				<div class="p-field text-center">
+					<p:commandButton value="Actualizar" ajax="true" update="frm"
+						onstart="PF('statusDialog').show()"
+						onsuccess="PF('statusDialog').hide()"
+						actionListener="#{datosGeneralesBean.guardar()}"
+						icon="pi pi-check" />
+					<p:commandButton value="Cancelar" class="ui-button-secondary"
+						actionListener="#{returnBean.returnDesktop}" icon="pi pi-times"
+						immediate="true" />
+				</div>
+			</div>
+
+			<p:dialog header="Foto" widgetVar="dlgFoto" minHeight="40"
+				width="350" showEffect="fade" modal="true">
+				<p class="p-m-0">
+					<p:inputTextarea id="txtFoto" rows="5" autoResize="false"
+						value="#{datosGeneralesBean.fotoTmp}"
+						placeholder="Convierta la foto a BASE64, luego copie el texto y pegue aquí" />
+					<small class="p-d-block">Para convertir a BASE64 click </small> <a
+						href="https://www.browserling.com/tools/file-to-base64"
+						target="_blank">AQUÍ</a>
+				</p>
+				<f:facet name="footer">
+					<p:commandButton value="Aceptar" icon="pi pi-check"
+						actionListener="#{datosGeneralesBean.changePic()}"
+						update="frm:pnlFoto" process="@this txtFoto"
+						onclick="PF('dlgFoto').hide()" />
+
+					<p:commandButton value="Cancelar" icon="pi pi-times"
+						onclick="PF('dlgFoto').hide()" class="ui-button-secondary"
+						immediate="true" />
+				</f:facet>
+			</p:dialog>
+
+			<p:messages id="messages" showDetail="false" autoUpdate="true"
+				closable="true" life="5000">
+				<p:autoUpdate />
+			</p:messages>
+			<script>
+				//<![CDATA[
+
+				//]]>
+			</script>
+
+
+		</h:form>
+
+
+	</ui:define>
+</ui:composition>
+</html>

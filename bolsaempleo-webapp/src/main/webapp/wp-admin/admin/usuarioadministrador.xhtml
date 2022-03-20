@@ -1,0 +1,294 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/template/layout.xhtml">
+
+	<ui:define name="title">Administradores</ui:define>
+
+	<ui:define name="content">
+		<h:form id="frm" update="growl">
+			<p:growl id="growl" sticky="false" life="5000" showDetail="false"
+				autoUpdate="true" />
+			<div
+				class="col-lg-12 col-md-12 col-sm-12 container justify-content-center">
+				<div class="card crud-demo">
+					<p:toolbar>
+						<p:toolbarGroup>
+							<p:commandButton value="Agregar" icon="pi pi-plus"
+								actionListener="#{usuarioAdministradorBean.openNew}"
+								update=":frm:manage-element-content"
+								oncomplete="PF('manageElementDialog').show()" process="@this"
+								styleClass="ui-button-success" style="margin-right: .5rem">
+								<p:resetInput target=":frm:manage-element-content" />
+							</p:commandButton>
+
+							<p:commandButton id="delete-elements-button"
+								value="#{usuarioAdministradorBean.deleteButtonMessage}"
+								icon="pi pi-trash"
+								actionListener="#{usuarioAdministradorBean.deleteSelectedElements}"
+								styleClass="ui-button-danger"
+								disabled="#{!usuarioAdministradorBean.hasSelectedElements()}"
+								update="@this">
+								<p:confirm header="Confirmación"
+									message="Eliminar registros seleccionados?"
+									icon="pi pi-exclamation-triangle" />
+							</p:commandButton>
+
+						</p:toolbarGroup>
+					</p:toolbar>
+
+					<p:dataTable id="dt-elements" widgetVar="dtElementos" var="element"
+						value="#{usuarioAdministradorBean.elements}" reflow="true"
+						styleClass="elements-table"
+						selection="#{usuarioAdministradorBean.selectedElements}"
+						rowKey="#{element.id}" paginator="true" rows="10"
+						rowSelectMode="add" paginatorPosition="bottom"
+						emptyMessage="No se encontraron registros">
+						<f:facet name="header">
+							<div class="elements-table-header"></div>
+						</f:facet>
+
+						<p:ajax event="rowSelect" update=":frm:delete-elements-button" />
+						<p:ajax event="rowUnselect" update=":frm:delete-elements-button" />
+						<p:ajax event="rowSelectCheckbox"
+							update=":frm:delete-elements-button" />
+						<p:ajax event="rowUnselectCheckbox"
+							update=":frm:delete-elements-button" />
+						<p:ajax event="toggleSelect" update=":frm:delete-elements-button" />
+
+						<p:column selectionMode="multiple" exportable="false"
+							style="width:50px;"></p:column>
+
+						<p:column headerText="Nombre" sortBy="#{element.nombre}">
+							<h:outputText value="#{element.nombre}" />
+						</p:column>
+						<p:column headerText="Apellido" sortBy="#{element.apellido}">
+							<h:outputText value="#{element.apellido}" />
+						</p:column>
+						<p:column headerText="Email" sortBy="#{element.email}">
+							<h:outputText value="#{element.email}" />
+						</p:column>
+						<p:column headerText="Ciudad" sortBy="#{element.ciudad}">
+							<h:outputText value="#{element.ciudad.nombre}" />
+						</p:column>
+						<p:column headerText="Provincia" sortBy="#{element.provincia}">
+							<h:outputText value="#{element.ciudad.provincia.nombre}" />
+						</p:column>
+
+						<p:column exportable="false">
+							<p:commandButton icon="pi pi-pencil"
+								actionListener="#{usuarioAdministradorBean.openNew}"
+								update=":frm:manage-element-content-admin"
+								oncomplete="PF('manageElementDialogAdmin').show()"
+								styleClass="edit-button rounded-button ui-button-success"
+								process="@this">
+
+								<f:setPropertyActionListener value="#{element}"
+									target="#{usuarioAdministradorBean.selectedElement}" />
+								<p:resetInput target=":frm:manage-element-content-admin" />
+
+							</p:commandButton>
+							<p:commandButton class="ui-button-warning rounded-button"
+								icon="pi pi-trash" process="@this"
+								oncomplete="PF('deleteElementDialog').show()">
+								<f:setPropertyActionListener value="#{element}"
+									target="#{usuarioAdministradorBean.selectedElement}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+
+					<p:dialog header="Administrador registrado" showEffect="fade"
+						modal="true" widgetVar="manageElementDialogAdmin"
+						responsive="true">
+						<p:outputPanel id="manage-element-content-admin" class="ui-fluid">
+							<p:outputPanel
+								rendered="#{not empty usuarioAdministradorBean.selectedElement}">
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Cedula" />
+									<br /> <label>
+										#{usuarioAdministradorBean.selectedElement.cedula} </label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Nombre" />
+									<br /> <label>
+										#{usuarioAdministradorBean.selectedElement.nombre}</label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Apellido" />
+									<br /> <label>
+										#{usuarioAdministradorBean.selectedElement.apellido}</label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Celular" />
+									<br /> <label>
+										#{usuarioAdministradorBean.selectedElement.celular}</label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="telefono" />
+									<br /> <label>
+										#{usuarioAdministradorBean.selectedElement.telefono}</label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Email" />
+									<br /> <label>
+										#{usuarioAdministradorBean.selectedElement.email}</label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Provincia" />
+									<br /> <label>
+										#{usuarioAdministradorBean.selectedElement.ciudad.provincia.nombre}</label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Nombre" />
+									<br /> <label>
+										#{usuarioAdministradorBean.selectedElement.ciudad.nombre}</label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Fecha nacimiento" />
+									<br /> <label>
+										#{usuarioAdministradorBean.selectedElement.fechaNacimiento}</label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Fecha registro" />
+									<br /> <label>
+										#{usuarioAdministradorBean.selectedElement.fechaRegistro}</label>
+								</div>
+
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Password" />
+									<p:inputText value="#{usuarioAdministradorBean.password}" />
+								</div>
+							</p:outputPanel>
+						</p:outputPanel>
+
+						<f:facet name="footer">
+							<p:commandButton value="Guardar" icon="pi pi-check"
+								actionListener="#{usuarioAdministradorBean.saveElement}"
+								update="manage-element-content-admin growl"
+								process="manage-element-content-admin @this" />
+							<p:commandButton value="Cancelar" icon="pi pi-times"
+								onclick="PF('manageElementDialogAdmin').hide()"
+								class="ui-button-secondary" />
+						</f:facet>
+
+					</p:dialog>
+					<p:dialog header="Registrar Administrador" showEffect="fade"
+						modal="true" widgetVar="manageElementDialog" responsive="true">
+						<p:outputPanel id="manage-element-content" class="ui-fluid">
+							<p:outputPanel
+								rendered="#{not empty usuarioAdministradorBean.selectedElement}">
+								<div class="p-field">
+									<p:outputLabel for="cedula" class="form-label" value="Cedula" />
+									<p:inputText id="cedula"
+										value="#{usuarioAdministradorBean.selectedElement.cedula}"
+										required="true" requiredMessage="Ingrese una cedula" />
+								</div>
+																
+								<div class="p-field">
+									<p:outputLabel for="nombre" class="form-label" value="Nombre" />
+									<p:inputText id="nombre"
+										value="#{usuarioAdministradorBean.selectedElement.nombre}"
+										required="true" requiredMessage="Ingrese un nombre" />
+								</div>
+								<div class="p-field">
+									<p:outputLabel for="apellido" class="form-label"
+										value="Apellido" />
+									<p:inputText id="apellido"
+										value="#{usuarioAdministradorBean.selectedElement.apellido}"
+										required="true" requiredMessage="Ingrese un apellido" />
+								</div>
+								<div class="p-field">
+									<p:outputLabel for="email" class="form-label" value="Email" />
+									<p:inputText id="email"
+										value="#{usuarioAdministradorBean.selectedElement.email}"
+										required="true" requiredMessage="Ingrese un email" />
+								</div>
+								
+								<div class="p-field">
+									<p:outputLabel for="password" class="form-label"
+										value="Password" />
+									<p:inputText id="password"
+										value="#{usuarioAdministradorBean.password}" required="true"
+										requiredMessage="Ingrese un password" />
+								</div>
+
+								<div class="p-field">
+									<p:outputLabel for="cmbProvincia" value="Residencia"
+										class="form-label" />
+									<p:selectOneMenu id="cmbProvincia" required="true"
+										requiredMessage="Provincia es obligatorio "
+										value="#{usuarioAdministradorBean.selectedProvincia}"
+										converter="entityConverter" style="width:100%;" dynamic="true">
+										<f:selectItem itemLabel="Seleccione" itemValue="#{null}"
+											noSelectionOption="true" />
+										<f:selectItems value="#{usuarioAdministradorBean.provincias}"
+											var="provincia" itemLabel="#{provincia.nombre}"
+											itemValue="#{provincia}" />
+										<p:ajax
+											listener="#{usuarioAdministradorBean.onProvinciaChange()}"
+											onstart="PF('statusDialog').show()"
+											onsuccess="PF('statusDialog').hide()" update="cmbCiudad" />
+									</p:selectOneMenu>
+
+									<p:selectOneMenu id="cmbCiudad" required="true"
+										requiredMessage="Ciudad es obligatorio "
+										value="#{usuarioAdministradorBean.selectedCiudad}"
+										converter="entityConverter" style="width:100%;"
+										disabled="#{usuarioAdministradorBean.selectedProvincia == null}">
+										<f:selectItem itemLabel="Seleccione" itemValue="#{null}"
+											noSelectionOption="true" />
+										<f:selectItems value="#{usuarioAdministradorBean.ciudades}"
+											var="ciudad" itemLabel="#{ciudad.nombre}"
+											itemValue="#{ciudad}" />
+									</p:selectOneMenu>
+								</div>
+							</p:outputPanel>
+
+						</p:outputPanel>
+
+						<f:facet name="footer">
+							<p:commandButton value="Guardar" icon="pi pi-check"
+								actionListener="#{usuarioAdministradorBean.saveElement}"
+								update="manage-element-content growl"
+								process="manage-element-content @this" />
+							<p:commandButton value="Cancelar" icon="pi pi-times"
+								onclick="PF('manageElementDialog').hide()"
+								class="ui-button-secondary" />
+						</f:facet>
+
+					</p:dialog>
+
+					<p:confirmDialog widgetVar="deleteElementDialog" showEffect="fade"
+						width="300" message="Eliminar registro seleccionado?"
+						header="Confirmar" severity="warn">
+						<p:commandButton value="Si" icon="pi pi-check"
+							actionListener="#{usuarioAdministradorBean.deleteElement}"
+							process="@this" oncomplete="PF('deleteElementDialog').hide()" />
+						<p:commandButton value="No" type="button"
+							styleClass="ui-button-secondary" icon="pi pi-times"
+							onclick="PF('deleteElementDialog').hide()" />
+					</p:confirmDialog>
+
+					<p:confirmDialog global="true" showEffect="fade" width="300">
+						<p:commandButton value="Si" type="button"
+							styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+						<p:commandButton value="No" type="button"
+							styleClass="ui-confirmdialog-no ui-button-secondary"
+							icon="pi pi-times" />
+					</p:confirmDialog>
+				</div>
+			</div>
+
+			<script>
+				//<![CDATA[
+
+				//]]>
+			</script>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

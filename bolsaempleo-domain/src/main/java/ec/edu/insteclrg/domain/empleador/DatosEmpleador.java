@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
@@ -51,7 +52,8 @@ public class DatosEmpleador {
 	@JoinColumn(name = "ciudad_id")
 	private Ciudad ciudad;
 
-	@Column
+	@Lob
+	@Column(columnDefinition = "LONGBLOB")
 	private byte[] logo;
 
 	@Column(nullable = false)

@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/template/layout.xhtml">
+	<ui:define name="css">
+		<style>
+</style>
+	</ui:define>
+	<ui:define name="title">Datos Gererales Admin - Actualización</ui:define>
+	<ui:define name="content">
+		<h:form id="frm" update="growl">
+			<p:growl id="growl" sticky="false" life="5000" showDetail="false"
+				autoUpdate="true" />
+			<div class="col-lg-6 col-md-12 col-sm-12 position-relative mb-4">
+				<div class="p-field">
+					<label class="form-label">Cédula/Pasaporte</label> <br /> <label>
+						#{datosGeneralesAdminBean.admin.cedula} </label>
+				</div>
+				<div class="p-field">
+					<p:outputLabel for="txtNombre" value="Nombres" class="form-label" />
+					<p:inputText id="txtNombre" type="text" required="true"
+						requiredMessage="Ingrese Nombres"
+						value="#{datosGeneralesAdminBean.admin.nombre}"
+						style="text-transform: uppercase" converter="toUpperCaseConverter" />
+				</div>
+
+				<div class="p-field">
+					<p:outputLabel for="txtApellidos" value="Apellidos"
+						class="form-label" />
+					<p:inputText id="txtApellidos" type="text" required="true"
+						requiredMessage="Ingrese Apellidos"
+						value="#{datosGeneralesAdminBean.admin.apellido}"
+						style="text-transform: uppercase" converter="toUpperCaseConverter" />
+				</div>
+				<div class="p-field">
+					<p:outputLabel for="txtFecNacimiento" value="Fecha nacimiento"
+						class="form-label" />
+					<p:datePicker id="txtFecNacimiento" monthNavigator="true"
+						yearNavigator="true" showWeek="true" required="true"
+						requiredMessage="Ingrese Fecha de nacimiento" pattern="yyyy-MM-dd"
+						value="#{datosGeneralesAdminBean.admin.fechaNacimiento}"
+						converterMessage="Formato debe ser: aaaa-MM-dd" />
+				</div>
+
+				<div class="p-field">
+					<p:outputLabel for="txtEmail" value="Email" class="form-label" />
+					<p:inputText id="txtEmail" type="text" required="true"
+						requiredMessage="Ingrese Email"
+						value="#{datosGeneralesAdminBean.admin.email}" />
+				</div>
+				<div class="p-field">
+					<p:outputLabel for="txtTelefono" value="Teléfono convencional"
+						class="form-label" />
+					<p:inputText id="txtTelefono" type="text"
+						value="#{datosGeneralesAdminBean.admin.telefono}" />
+				</div>
+
+				<div class="p-field">
+					<p:outputLabel for="txtTCelular" value="Celular" class="form-label" />
+					<p:inputText id="txtTCelular" type="text" required="true"
+						requiredMessage="Ingrese Celular"
+						value="#{datosGeneralesAdminBean.admin.celular}" />
+				</div>
+				<div class="p-field">
+					<p:outputLabel for="cmbProvincia" value="Residencia"
+						class="form-label" />
+					<p:selectOneMenu id="cmbProvincia" required="true"
+						requiredMessage="Provincia es obligatorio "
+						value="#{datosGeneralesAdminBean.selectedProvincia}"
+						converter="entityConverter" style="width:100%;" dynamic="true">
+						<f:selectItem itemLabel="Seleccione" itemValue="#{null}"
+							noSelectionOption="true" />
+						<f:selectItems value="#{datosGeneralesAdminBean.provincias}"
+							var="provincia" itemLabel="#{provincia.nombre}"
+							itemValue="#{provincia}" />
+						<p:ajax listener="#{datosGeneralesAdminBean.onProvinciaChange()}"
+							onstart="PF('statusDialog').show()"
+							onsuccess="PF('statusDialog').hide()" update="cmbCiudad" />
+					</p:selectOneMenu>
+
+					<p:selectOneMenu id="cmbCiudad" required="true"
+						requiredMessage="Ciudad es obligatorio "
+						value="#{datosGeneralesAdminBean.selectedCiudad}"
+						converter="entityConverter" style="width:100%;"
+						disabled="#{datosGeneralesAdminBean.selectedProvincia == null}">
+						<f:selectItem itemLabel="Seleccione" itemValue="#{null}"
+							noSelectionOption="true" />
+						<f:selectItems value="#{datosGeneralesAdminBean.ciudades}"
+							var="ciudad" itemLabel="#{ciudad.nombre}" itemValue="#{ciudad}" />
+					</p:selectOneMenu>
+				</div>
+				<div class="p-field">
+					<p:outputLabel for="txtDireccion" value="Dirección"
+						class="form-label" />
+					<p:inputText id="txtDireccion" type="text" required="true"
+						requiredMessage="Ingrese Dirección"
+						value="#{datosGeneralesAdminBean.admin.direccion}" />
+				</div>
+				<div class="p-field">
+					<p:panel id="pnlFoto" header="Foto">
+						<p:commandButton value="Subir foto" type="button"
+							icon="pi pi-external-link" onclick="PF('dlgFoto').show()" />
+						<p:outputLabel
+							rendered="#{not empty datosGeneralesAdminBean.foto}"
+							style="width:100%;text-align:center;">
+							<img class="img-fluid"
+								src="data:image/png;base64,${datosGeneralesAdminBean.foto}" />
+						</p:outputLabel>
+					</p:panel>
+				</div>
+
+				<div class="p-field" style="text-align: center;"></div>
+				<br /> <br />
+				<div class="p-field text-center">
+					<p:commandButton value="Actualizar" ajax="true" update="frm"
+						onstart="PF('statusDialog').show()"
+						onsuccess="PF('statusDialog').hide()"
+						actionListener="#{datosGeneralesAdminBean.guardar()}"
+						icon="pi pi-check" />
+					<p:commandButton value="Cancelar" class="ui-button-secondary"
+						actionListener="#{returnBean.returnDesktop}" icon="pi pi-times"
+						immediate="true" />
+				</div>
+			</div>
+			
+			<p:dialog header="Foto" widgetVar="dlgFoto" minHeight="40"
+				width="350" showEffect="fade" modal="true">
+				<p class="p-m-0">
+					<p:inputTextarea id="txtFoto" rows="5" autoResize="false"
+						value="#{datosGeneralesAdminBean.fotoTmp}"
+						placeholder="Convierta la foto a BASE64, luego copie el texto y pegue aquí" />
+					<small class="p-d-block">Para convertir a BASE64 click </small> <a
+						href="https://www.browserling.com/tools/file-to-base64"
+						target="_blank">AQUÍ</a>
+				</p>
+				<f:facet name="footer">
+					<p:commandButton value="Aceptar" icon="pi pi-check"
+						actionListener="#{datosGeneralesAdminBean.changePic()}"
+						update="frm:pnlFoto" process="@this txtFoto"
+						onclick="PF('dlgFoto').hide()" />
+
+					<p:commandButton value="Cancelar" icon="pi pi-times"
+						onclick="PF('dlgFoto').hide()" class="ui-button-secondary"
+						immediate="true" />
+				</f:facet>
+			</p:dialog>
+
+
+			<p:messages id="messages" showDetail="false" autoUpdate="true"
+				closable="true" life="5000">
+				<p:autoUpdate />
+			</p:messages>
+			<script>
+				//<![CDATA[
+
+				//]]>
+			</script>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

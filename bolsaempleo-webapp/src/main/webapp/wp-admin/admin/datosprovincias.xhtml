@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/template/layout.xhtml">
+
+	<ui:define name="title">Provincias</ui:define>
+	<ui:define name="content">
+		<h:form id="frm" update="growl">
+			<p:growl id="growl" sticky="false" life="5000" showDetail="false"
+				autoUpdate="true" />
+			<div
+				class="col-lg-12 col-md-12 col-sm-12 container justify-content-center">
+				<div class="card crud-demo">
+
+					<p:toolbar>
+						<p:toolbarGroup>
+							<p:commandButton value="Agregar" icon="pi pi-plus"
+								actionListener="#{provinciasDatosAdminBean.openNew}"
+								update=":frm:manage-element-content"
+								oncomplete="PF('manageElementDialog').show()" process="@this"
+								styleClass="ui-button-success" style="margin-right: .5rem">
+								<p:resetInput target=":frm:manage-element-content" />
+							</p:commandButton>
+							<p:commandButton id="delete-elements-button"
+								value="#{provinciasDatosAdminBean.deleteButtonMessage}"
+								icon="pi pi-trash"
+								actionListener="#{provinciasDatosAdminBean.deleteSelectedElements}"
+								styleClass="ui-button-danger"
+								disabled="#{!provinciasDatosAdminBean.hasSelectedElements()}"
+								update="@this">
+								<p:confirm header="Confirmación"
+									message="Eliminar registros seleccionados?"
+									icon="pi pi-exclamation-triangle" />
+							</p:commandButton>
+						</p:toolbarGroup>
+					</p:toolbar>
+
+					<p:dataTable id="dt-elements" widgetVar="dtElementos" var="element"
+						value="#{provinciasDatosAdminBean.elements}" reflow="true"
+						styleClass="elements-table"
+						selection="#{provinciasDatosAdminBean.selectedElements}"
+						rowKey="#{element.id}" paginator="true" rows="10"
+						rowSelectMode="add" paginatorPosition="bottom"
+						emptyMessage="No se encontraron registros">
+						<f:facet name="header">
+							<div class="elements-table-header"></div>
+						</f:facet>
+
+						<p:ajax event="rowSelect" update=":frm:delete-elements-button" />
+						<p:ajax event="rowUnselect" update=":frm:delete-elements-button" />
+						<p:ajax event="rowSelectCheckbox"
+							update=":frm:delete-elements-button" />
+						<p:ajax event="rowUnselectCheckbox"
+							update=":frm:delete-elements-button" />
+						<p:ajax event="toggleSelect" update=":frm:delete-elements-button" />
+
+						<p:column selectionMode="multiple" exportable="false"
+							style="width:50px;"></p:column>
+
+						<p:column headerText="Nombre" sortBy="#{element.nombre}">
+							<h:outputText value="#{element.nombre}" />
+						</p:column>
+						
+						<p:column exportable="false">
+							<p:commandButton icon="pi pi-pencil"
+								update=":frm:manage-element-content"
+								oncomplete="PF('manageElementDialog').show()"
+								styleClass="edit-button rounded-button ui-button-success"
+								process="@this">
+								<f:setPropertyActionListener value="#{element}"
+									target="#{provinciasDatosAdminBean.selectedElement}" />
+								<p:resetInput target=":frm:manage-element-content" />
+							</p:commandButton>
+							<p:commandButton class="ui-button-warning rounded-button"
+								icon="pi pi-trash" process="@this"
+								oncomplete="PF('deleteElementDialog').show()">
+								<f:setPropertyActionListener value="#{element}"
+									target="#{provinciasDatosAdminBean.selectedElement}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+
+					<p:dialog header="Capacitación" showEffect="fade" modal="true"
+						widgetVar="manageElementDialog" responsive="true">
+						<p:outputPanel id="manage-element-content" class="ui-fluid">
+							<p:outputPanel
+								rendered="#{not empty provinciasDatosAdminBean.selectedElement}">
+								<div class="p-field">
+									<p:outputLabel for="nombre" class="form-label"
+										value="Nombre" />
+									<p:inputText id="nombre"
+										value="#{provinciasDatosAdminBean.selectedElement.nombre}"
+										required="true"
+										requiredMessage="Ingrese nombre de provincia" />
+								</div>
+								
+							</p:outputPanel>
+						</p:outputPanel>
+
+						<f:facet name="footer">
+							<p:commandButton value="Guardar" icon="pi pi-check"
+								actionListener="#{provinciasDatosAdminBean.saveElement}"
+								update="manage-element-content growl"
+								process="manage-element-content @this" />
+							<p:commandButton value="Cancelar" icon="pi pi-times"
+								onclick="PF('manageElementDialog').hide()"
+								class="ui-button-secondary" />
+						</f:facet>
+
+					</p:dialog>
+
+					<p:confirmDialog widgetVar="deleteElementDialog" showEffect="fade"
+						width="300" message="Eliminar registro seleccionado?"
+						header="Confirmar" severity="warn">
+						<p:commandButton value="Si" icon="pi pi-check"
+							actionListener="#{provinciasDatosAdminBean.deleteElement}" process="@this"
+							oncomplete="PF('deleteElementDialog').hide()" />
+						<p:commandButton value="No" type="button"
+							styleClass="ui-button-secondary" icon="pi pi-times"
+							onclick="PF('deleteElementDialog').hide()" />
+					</p:confirmDialog>
+
+					<p:confirmDialog global="true" showEffect="fade" width="300">
+						<p:commandButton value="Si" type="button"
+							styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+						<p:commandButton value="No" type="button"
+							styleClass="ui-confirmdialog-no ui-button-secondary"
+							icon="pi pi-times" />
+					</p:confirmDialog>
+				</div>
+			</div>
+
+			<script>
+				//<![CDATA[
+
+				//]]>
+			</script>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

@@ -58,6 +58,7 @@ public class InstruccionBean implements Serializable {
 	}
 
 	public void saveElement() {
+	
 		if (this.selectedElement.getId() == 0L) {
 			selectedElement.setUser(user);
 			this.elements.add(this.selectedElement);
@@ -104,9 +105,5 @@ public class InstruccionBean implements Serializable {
 		PrimeFaces.current().executeScript("PF('dtElementos').clearFilters()");
 	}
 
-	public void loadDialog() {
-		Map<Long, NivelInstruccion> nivelesMap = niveles.stream()
-				.collect(Collectors.toMap(NivelInstruccion::getId, nivel -> nivel));
-		selectedElement.setNivelInstruccion(nivelesMap.get(selectedElement.getNivelInstruccion().getId()));
-	}
+	
 }

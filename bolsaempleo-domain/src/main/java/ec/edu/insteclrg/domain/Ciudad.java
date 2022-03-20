@@ -26,7 +26,8 @@ public class Ciudad {
 	@Column
 	private String nombre;
 
-	@ManyToOne(cascade = CascadeType.ALL, optional = false)
+	//@ManyToOne(cascade = CascadeType.ALL, optional = false)
+	@ManyToOne
 	@JoinColumn(name = "provincia_id") // , referencedColumnName = "id")
 	private Provincia provincia;
 
