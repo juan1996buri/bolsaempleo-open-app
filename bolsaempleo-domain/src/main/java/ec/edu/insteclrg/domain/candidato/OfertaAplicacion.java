@@ -1,5 +1,7 @@
 package ec.edu.insteclrg.domain.candidato;
 
+import java.time.LocalDate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,17 +28,16 @@ public class OfertaAplicacion {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(updatable = false, nullable = false)
 	private long id;
-	
-
-	
-	/*@ManyToOne
+	@ManyToOne
 	@JoinColumn(name = "ofertalaboral_id")
 	private Oferta oferta;
 	
-	@OneToMany
+	@ManyToOne
 	@JoinColumn(name = "user_id")
-	private User userCandidato;// candidato*/
+	private User user;// candidato
 	
-	
+	@Column
+	private LocalDate fechaRegistro;
+
 	
 }

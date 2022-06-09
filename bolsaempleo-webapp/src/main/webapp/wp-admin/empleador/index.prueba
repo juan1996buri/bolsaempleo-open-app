@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/template/layout.xhtml">
+
+	<ui:define name="title">Oferta Laboral</ui:define>
+
+	<ui:define name="content">
+		<h:form id="frm" update="growl">
+			<p:growl id="growl" sticky="false" life="5000" showDetail="false"
+				autoUpdate="true" />
+			<div
+				class="col-lg-12 col-md-12 col-sm-12 container justify-content-center">
+				<div class="card crud-demo">
+					<p:dataTable id="dt-elements" widgetVar="dtElementos" var="element"
+						value="#{ofertaRecepcionBean.elements}" reflow="true"
+						styleClass="elements-table"
+						selection="#{ofertaRecepcionBean.selectedElements}"
+						rowKey="#{element.id}" paginator="true" rows="10"
+						rowSelectMode="add" paginatorPosition="bottom"
+						emptyMessage="No se encontraron registros">
+						<f:facet name="header">
+							<div class="elements-table-header"></div>
+						</f:facet>
+						<p:column selectionMode="multiple" exportable="false"
+							style="width:50px;"></p:column>
+
+						<p:column headerText="Titulo de oferta" sortBy="#{element.oferta.tituloOferta}">
+							<h:outputText value="#{element.oferta.tituloOferta}" />
+						</p:column>
+						<p:column headerText="Titulo de oferta" sortBy="#{element.oferta.tituloOferta}">
+							<h:outputText value="#{element.oferta.tituloOferta}" />
+						</p:column>
+						<p:column headerText="Titulo de oferta" sortBy="#{element.user.datosCandidato.nombre}">
+							<h:outputText value="#{element.user.candidato.nombre}" />
+						</p:column>
+
+
+						<p:column exportable="false">
+
+							<p:commandButton class="ui-button-warning rounded-button"
+								icon="pi pi-trash" process="@this"
+								oncomplete="PF('deleteElementDialog').show()">
+								<f:setPropertyActionListener value="#{element}"
+									target="#{ofertaRecepcionBean.selectedElement}" />
+							</p:commandButton>
+						</p:column>
+
+
+					</p:dataTable>
+					<p:confirmDialog widgetVar="deleteElementDialog" showEffect="fade"
+						width="300" message="Eliminar registro seleccionado?"
+						header="Confirmar" severity="warn">
+						<p:commandButton value="Si" icon="pi pi-check"
+							actionListener="#{ofertaRecepcionBean.deleteElement}"
+							process="@this" oncomplete="PF('deleteElementDialog').hide()" />
+						<p:commandButton value="No" type="button"
+							styleClass="ui-button-secondary" icon="pi pi-times"
+							onclick="PF('deleteElementDialog').hide()" />
+					</p:confirmDialog>
+
+					<p:confirmDialog global="true" showEffect="fade" width="300">
+						<p:commandButton value="Si" type="button"
+							styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+						<p:commandButton value="No" type="button"
+							styleClass="ui-confirmdialog-no ui-button-secondary"
+							icon="pi pi-times" />
+					</p:confirmDialog>
+
+
+
+
+				</div>
+			</div>
+
+
+			<script>
+				//<![CDATA[
+
+				//]]>
+			</script>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

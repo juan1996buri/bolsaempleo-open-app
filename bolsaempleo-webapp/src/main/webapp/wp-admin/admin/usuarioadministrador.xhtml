@@ -86,7 +86,6 @@
 								oncomplete="PF('manageElementDialogAdmin').show()"
 								styleClass="edit-button rounded-button ui-button-success"
 								process="@this">
-
 								<f:setPropertyActionListener value="#{element}"
 									target="#{usuarioAdministradorBean.selectedElement}" />
 								<p:resetInput target=":frm:manage-element-content-admin" />
@@ -101,7 +100,7 @@
 						</p:column>
 					</p:dataTable>
 
-					<p:dialog header="Administrador registrado" showEffect="fade"
+					<p:dialog header="Administrador" showEffect="fade"
 						modal="true" widgetVar="manageElementDialogAdmin"
 						responsive="true">
 						<p:outputPanel id="manage-element-content-admin" class="ui-fluid">

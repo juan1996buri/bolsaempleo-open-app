@@ -2,6 +2,7 @@ package ec.edu.insteclrg.webapp.view.bean.empleador;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -12,6 +13,8 @@ import org.primefaces.PrimeFaces;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import com.lowagie.text.Element;
 
 import ec.edu.insteclrg.domain.Ciudad;
 import ec.edu.insteclrg.domain.NivelInstruccion;
@@ -54,6 +57,9 @@ public class OfertaLaboralBean  implements Serializable {
 	private User user;
 	private TipoContrato selectedNivel;
 	
+	private String foto;
+	private String fotoTmp;
+	
 	@Autowired
 	private ProvinciaService provinciaService;
 
@@ -69,11 +75,14 @@ public class OfertaLaboralBean  implements Serializable {
 
 	@PostConstruct
 	public void init() {
+		
+		
 		this.user = loginBean.getUser();
 		this.elements = entityService.buscarPorUsuario(user);
 		contrato = tipoContratoServicio.buscarTodo(new TipoContrato());
 		
 		provincias = this.provinciaService.buscarTodo(new Provincia());
+		
 		if (provincias.size() > 0) {
 			selectedProvincia = provincias.get(0);
 			this.ciudades = ciudadService.buscarPorProvincia(this.selectedProvincia);
@@ -81,14 +90,32 @@ public class OfertaLaboralBean  implements Serializable {
 				selectedCiudad = ciudades.get(0);
 			}
 		}
+		
+		
+		
+		
 	}
 
 	public void openNew() {
 		this.selectedElement = new Oferta();
+		foto=null;
+		fotoTmp=null;
 	}
+	
+	
 
 	public void saveElement() {
+		
+		byte[] fotoByte = null;
+		if (foto != null)
+			if (!foto.isEmpty())
+				fotoByte = Base64.getDecoder().decode(foto);		
+		selectedElement.setBanner(fotoByte);
+		
+		
 		if (this.selectedElement.getId() == 0L) {
+			
+			
 			selectedElement.setUser(user);
 			this.elements.add(this.selectedElement);
 			LocalDate localDate = LocalDate.now();
@@ -98,6 +125,9 @@ public class OfertaLaboralBean  implements Serializable {
 			entityService.guardar(selectedElement);
 			Mensajes.addMsg(MensajesTipo.INFORMACION, "Registro agregado");
 		} else {
+			
+			
+			selectedElement.setCiudad(selectedCiudad);
 			entityService.actualizar(selectedElement);
 			Mensajes.addMsg(MensajesTipo.INFORMACION, "Registro actualizado");
 		}
@@ -139,15 +169,37 @@ public class OfertaLaboralBean  implements Serializable {
 	}
 
 	public void loadDialog() {
-		Map<Long, TipoContrato> nivelesMap = contrato.stream()
+		
+			if(this.selectedElement.getBanner()!=null) {
+				foto = Base64.getEncoder().encodeToString(selectedElement.getBanner());
+				fotoTmp = foto;
+			}else {
+				fotoTmp=null;
+				foto=null;
+			}
+		
+			
+	
+		
+	
+		/*Map<Long, TipoContrato> nivelesMap = contrato.stream()
 				.collect(Collectors.toMap(TipoContrato::getId, nivel -> nivel));
-		selectedElement.setTipoContrato(nivelesMap.get(selectedElement.getTipoContrato().getId()));
+		selectedElement.setTipoContrato(nivelesMap.get(selectedElement.getTipoContrato().getId()));*/
 	}
+	
+	
 	
 	public void onProvinciaChange() {
 		if (selectedProvincia != null)
 			ciudades = ciudadService.buscarPorProvincia(selectedProvincia);
 		else
 			ciudades.clear();
+	}
+	
+	public void changePic() {
+		foto = fotoTmp;
+		// if (foto.isEmpty() || foto == null)
+		// foto = SINFOTO;
+		// PrimeFaces.current().ajax().update("frm");
 	}
 }

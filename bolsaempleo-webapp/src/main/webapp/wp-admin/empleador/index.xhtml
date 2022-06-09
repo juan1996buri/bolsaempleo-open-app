@@ -7,21 +7,220 @@
 
 <ui:composition template="/WEB-INF/template/layout.xhtml">
 
-	<ui:define name="title">Escritorio</ui:define>
+	<ui:define name="title">Postulantes</ui:define>
+
 	<ui:define name="content">
 		<h:form id="frm" update="growl">
 			<p:growl id="growl" sticky="false" life="5000" showDetail="false"
 				autoUpdate="true" />
 			<div
 				class="col-lg-12 col-md-12 col-sm-12 container justify-content-center">
-				<div>
-					Bienvenido empleador
+				<div class="card crud-demo">
+					<p:dataTable id="dt-elements" widgetVar="dtElementos" var="element"
+						value="#{ofertaRecepcionBean.elements}" reflow="true"
+						styleClass="elements-table"
+						selection="#{ofertaRecepcionBean.selectedElements}"
+						rowKey="#{element.id}" paginator="true" rows="10"
+						rowSelectMode="add" paginatorPosition="bottom"
+						emptyMessage="No se encontraron registros">
+						<f:facet name="header">
+							<div class="elements-table-header"></div>
+						</f:facet>
+						<p:column selectionMode="multiple" exportable="false"
+							style="width:50px;"></p:column>
+
+						<p:column headerText="Titulo de oferta"
+							sortBy="#{element.oferta.tituloOferta}">
+							<h:outputText value="#{element.oferta.tituloOferta}" />
+						</p:column>
+
+						<p:column headerText="Postulante"
+							sortBy="#{element.user.datosCandidato.nombre}">
+							<h:outputText value="#{element.user.candidato.nombre}" />
+							<h:outputText value="#{element.user.candidato.apellido}" />
+						</p:column>
+						<p:column headerText="Email"
+							sortBy="#{element.user.datosCandidato.email}">
+							<h:outputText value="#{element.user.candidato.email}" />
+						</p:column>
+						<p:column headerText="Fecha de postulacion"
+							sortBy="#{element.fechaRegistro}">
+							<h:outputText value="#{element.fechaRegistro}" />
+						</p:column>
+						<p:column exportable="false">
+							<p:commandButton icon="pi pi-user"
+								actionListener="#{ofertaRecepcionBean.openNew}"
+								update=":frm:manage-element-content-postulante"
+								oncomplete="PF('manageElementDialogPostulante').show()"
+								styleClass="edit-button rounded-button ui-button-success"
+								process="@this">
+								<f:setPropertyActionListener value="#{element}"
+									target="#{ofertaRecepcionBean.selectedElement}" />
+								<p:resetInput target=":frm:manage-element-content-postulante" />
+							</p:commandButton>
+
+							<p:commandButton icon="pi pi-briefcase"
+								actionListener="#{ofertaRecepcionBean.openNew}"
+								update=":frm:manage-element-content-oferta"
+								oncomplete="PF('manageElementDialogOferta').show()"
+								styleClass="edit-button rounded-button ui-button-success"
+								process="@this">
+								<f:setPropertyActionListener value="#{element}"
+									target="#{ofertaRecepcionBean.selectedElement}" />
+								<p:resetInput target=":frm:manage-element-content-postulante" />
+							</p:commandButton>
+
+						</p:column>
+					</p:dataTable>
+
+					<p:dialog header="Oferta" showEffect="fade" modal="true"
+						widgetVar="manageElementDialogOferta" responsive="true">
+						<p:outputPanel id="manage-element-content-oferta" class="ui-fluid">
+							<p:outputPanel
+								rendered="#{not empty ofertaRecepcionBean.selectedElement}">
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Titulo de oferta" />
+									<br /> <label>
+										#{ofertaRecepcionBean.selectedElement.oferta.tituloOferta} </label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Tipo de contrato" />
+									<br /> <label>
+										#{ofertaRecepcionBean.selectedElement.oferta.tipoContrato.nombre}
+									</label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Remuneracion" />
+									<br /> <label>
+										#{ofertaRecepcionBean.selectedElement.oferta.remuneracion} </label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Ciudad" />
+									<br /> <label>
+										#{ofertaRecepcionBean.selectedElement.oferta.ciudad.nombre} </label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Provincia" />
+									<br /> <label>
+										#{ofertaRecepcionBean.selectedElement.oferta.ciudad.provincia.nombre}
+									</label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Fecha de publicacion" />
+									<br /> <label>
+										#{ofertaRecepcionBean.selectedElement.oferta.fechaPublicacion}
+									</label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label"
+										value="Fecha limite de aplicacion" />
+									<br /> <label>
+										#{ofertaRecepcionBean.selectedElement.oferta.fechaLimiteAplicacion}
+									</label>
+								</div>
+
+							</p:outputPanel>
+						</p:outputPanel>
+
+						<f:facet name="footer">
+							<p:commandButton value="Cerrar" icon="pi pi-times"
+								onclick="PF('manageElementDialogOferta').hide()"
+								class="ui-button-secondary" />
+						</f:facet>
+					</p:dialog>
+
+					<p:dialog header="Candidato" showEffect="fade" modal="true"
+						widgetVar="manageElementDialogPostulante" responsive="true">
+						<p:outputPanel id="manage-element-content-postulante"
+							class="ui-fluid">
+							<p:outputPanel
+								rendered="#{not empty ofertaRecepcionBean.selectedElement}">
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Cedula" />
+									<br /> <label>
+										#{ofertaRecepcionBean.selectedElement.user.candidato.cedula} </label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Nombre" />
+									<br /> <label>
+										#{ofertaRecepcionBean.selectedElement.user.candidato.nombre} </label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Apellido" />
+									<br /> <label>
+										#{ofertaRecepcionBean.selectedElement.user.candidato.apellido}
+									</label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Fecha nacimiento" />
+									<br /> <label>
+										#{ofertaRecepcionBean.selectedElement.user.candidato.fechaNacimiento}
+									</label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="email" />
+									<br /> <label>
+										#{ofertaRecepcionBean.selectedElement.user.candidato.email} </label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Telefono" />
+									<br /> <label>
+										#{ofertaRecepcionBean.selectedElement.user.candidato.telefono}
+									</label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Celular" />
+									<br /> <label>
+										#{ofertaRecepcionBean.selectedElement.user.candidato.celular}
+									</label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Ciudad" />
+									<br /> <label>
+										#{ofertaRecepcionBean.selectedElement.user.candidato.ciudad.nombre}
+									</label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Provincia" />
+									<br /> <label>
+										#{ofertaRecepcionBean.selectedElement.user.candidato.ciudad.provincia.nombre}
+									</label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label"
+										value="Fecha de aplicacion" />
+									<br /> <label> #{ofertaRecepcionBean.selectedElement.fechaRegistro}</label>
+								</div>
+
+								<div>
+									<p:outputLabel class="form-label" value="Hoja de vida" />
+									<br /> <a class="nav-link"
+										download="#{ofertaRecepcionBean.selectedElement.user.candidato.cvArchivo}-formato2.pdf"
+										href="data:application/pdf;base64,#{ofertaRecepcionBean.selectedElement.user.candidato.cvArchivo}">>
+
+
+										Descargar</a>
+
+
+								</div>
+							</p:outputPanel>
+						</p:outputPanel>
+
+						<f:facet name="footer">
+							<p:commandButton value="Enviar" icon="pi pi-check"
+								actionListener="#{ofertaRecepcionBean.aceptarElemento}"
+								onclick="PF('manageElementDialogPostulante').hide()"
+								update="manage-element-content-postulante growl"
+								process="manage-element-content-postulante @this" />
+							<p:commandButton value="Cerrar" icon="pi pi-times"
+								onclick="PF('manageElementDialogPostulante').hide()"
+								class="ui-button-secondary" />
+						</f:facet>
+					</p:dialog>
 				</div>
 			</div>
-			<p:messages id="messages" showDetail="false" autoUpdate="true"
-				closable="true" life="5000">
-				<p:autoUpdate />
-			</p:messages>
+
+
 			<script>
 				//<![CDATA[
 

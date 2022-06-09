@@ -12,4 +12,5 @@ import ec.edu.insteclrg.domain.candidato.Instruccion;
 public interface InstruccionRepository extends JpaRepository<Instruccion, Long> {
 
 	List<Instruccion> findByUser(User user);
+	
 }

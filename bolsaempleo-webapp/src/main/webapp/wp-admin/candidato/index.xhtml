@@ -15,46 +15,25 @@
 				autoUpdate="true" />
 			<div
 				class="col-lg-12 col-md-12 col-sm-12 container justify-content-center">
-				<div class="card crud-demo">
-					<p:toolbar>
-						<p:toolbarGroup>
-
-
-						</p:toolbarGroup>
-					</p:toolbar>
-
+				<div class="card crud-demo">	
 					<p:dataTable id="dt-elements" widgetVar="dtElementos" var="element"
 						value="#{ofertaAplicacionBean.elements}" reflow="true"
 						styleClass="elements-table"
-						selection="#{ofertaAplicacionBean.selectedElements}"
+						
 						rowKey="#{element.id}" paginator="true" rows="10"
-						rowSelectMode="add" paginatorPosition="bottom"
-						emptyMessage="No se encontraron registros">
+						rowSelectMode="add" paginatorPosition="bottom">
 						<f:facet name="header">
 							<div class="elements-table-header"></div>
 						</f:facet>
-
-
-
-
-
-						<p:column selectionMode="multiple" exportable="false"
-							style="width:50px;"></p:column>
-
 						<p:column headerText="Titulo de la oferta"
-							sortBy="#{element.remuneracion}">
+							sortBy="#{element.tituloOferta}">
 							<h:outputText value="#{element.tituloOferta}" />
 						</p:column>
-						<p:column headerText="Remuneracion"
-							sortBy="#{element.remuneracion}">
-							<h:outputText value="#{element.remuneracion}" />
-						</p:column>
+
 						<p:column headerText="TipoContrato"
 							sortBy="#{element.tipoContrato.nombre}">
 							<h:outputText value="#{element.tipoContrato.nombre}" />
 						</p:column>
-
-
 						<p:column headerText="Provincia"
 							sortBy="#{element.ciudad.provincia.nombre}">
 							<h:outputText value="#{element.ciudad.provincia.nombre}" />
@@ -68,47 +47,94 @@
 							sortBy="#{element.fechaPublicacion}">
 							<h:outputText value="#{element.fechaPublicacion}" />
 						</p:column>
-
-						<p:column headerText="Fecha limite de publicacion"
-							sortBy="#{element.fechaLimiteAplicacion}">
-							<h:outputText value="#{element.fechaLimiteAplicacion}" />
-						</p:column>
-
-
 						<p:column exportable="false">
-							
+							<p:commandButton icon="pi pi-search"
+								actionListener="#{ofertaAplicacionBean.openNew}"
+								update=":frm:manage-element-content-oferta"
+								oncomplete="PF('manageElementDialogSolicitud').show()"
+								styleClass="edit-button rounded-button ui-button-success"
+								process="@this">
+								<f:setPropertyActionListener value="#{element}"
+									target="#{ofertaAplicacionBean.selectedElement}" />
+								<p:resetInput target=":frm:manage-element-content-oferta" />
+
+							</p:commandButton>
 							<p:commandButton class="ui-button-warning rounded-button"
-								icon="pi pi-trash" process="@this"
-								oncomplete="PF('deleteElementDialog').show()">
+								icon="pi pi-send" process="@this"
+								oncomplete="PF('enviarSolicitudDialog').show()">
 								<f:setPropertyActionListener value="#{element}"
 									target="#{ofertaAplicacionBean.selectedElement}" />
 							</p:commandButton>
 						</p:column>
-
-
 					</p:dataTable>
-					<p:confirmDialog widgetVar="deleteElementDialog" showEffect="fade"
-						width="300" message="Eliminar registro seleccionado?"
+					<p:dialog header="Oferta" showEffect="fade" modal="true"
+						widgetVar="manageElementDialogSolicitud" responsive="true">
+						<p:outputPanel id="manage-element-content-oferta" class="ui-fluid">
+							<p:outputPanel
+								rendered="#{not empty ofertaAplicacionBean.selectedElement}">
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Titulo de oferta" />
+									<br /> <label>
+										#{ofertaAplicacionBean.selectedElement.tituloOferta} </label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Tipo de contrato" />
+									<br /> <label>
+										#{ofertaAplicacionBean.selectedElement.tipoContrato.nombre} </label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Remuneracion" />
+									<br /> <label>
+										#{ofertaAplicacionBean.selectedElement.remuneracion} </label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Ciudad" />
+									<br /> <label>
+										#{ofertaAplicacionBean.selectedElement.ciudad.nombre} </label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Provincia" />
+									<br /> <label>
+										#{ofertaAplicacionBean.selectedElement.ciudad.provincia.nombre}
+									</label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Fecha de publicacion" />
+									<br /> <label>
+										#{ofertaAplicacionBean.selectedElement.fechaPublicacion}
+									</label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Fecha limite de aplicacion" />
+									<br /> <label>
+										#{ofertaAplicacionBean.selectedElement.fechaLimiteAplicacion}
+									</label>
+								</div>
+
+							</p:outputPanel>
+						</p:outputPanel>
+
+						<f:facet name="footer">
+							<p:commandButton value="Enviar" icon="pi pi-check"
+								actionListener="#{ofertaAplicacionBean.enviarSolicitud}"
+								onclick="PF('manageElementDialogSolicitud').hide()"
+								update="manage-element-content-oferta growl"
+								process="manage-element-content-oferta @this" />
+							<p:commandButton value="Cancelar" icon="pi pi-times"
+								onclick="PF('manageElementDialogSolicitud').hide()"
+								class="ui-button-secondary" />
+						</f:facet>
+					</p:dialog>
+					<p:confirmDialog widgetVar="enviarSolicitudDialog" showEffect="fade"
+						width="300" message="Enviar registro seleccionado?"
 						header="Confirmar" severity="warn">
 						<p:commandButton value="Si" icon="pi pi-check"
-							actionListener="#{ofertaAplicacionBean.deleteElement}"
-							process="@this" oncomplete="PF('deleteElementDialog').hide()" />
+							actionListener="#{ofertaAplicacionBean.enviarSolicitud}"
+							process="@this" oncomplete="PF('enviarSolicitudDialog').hide()" />
 						<p:commandButton value="No" type="button"
 							styleClass="ui-button-secondary" icon="pi pi-times"
-							onclick="PF('deleteElementDialog').hide()" />
+							onclick="PF('enviarSolicitudDialog').hide()" />
 					</p:confirmDialog>
-
-					<p:confirmDialog global="true" showEffect="fade" width="300">
-						<p:commandButton value="Si" type="button"
-							styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
-						<p:commandButton value="No" type="button"
-							styleClass="ui-confirmdialog-no ui-button-secondary"
-							icon="pi pi-times" />
-					</p:confirmDialog>
-
-
-
-
 				</div>
 			</div>
 

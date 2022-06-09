@@ -11,8 +11,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import ec.edu.insteclrg.domain.candidato.DatosCandidato;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -41,5 +43,9 @@ public class User {
 	joinColumns = @JoinColumn(name = "user_id"), 
 	inverseJoinColumns = @JoinColumn(name = "authority_id"))
 	private Set<Authority> authority;
+	
+	@OneToOne (mappedBy="user")
+    private DatosCandidato candidato;
+
 
 }

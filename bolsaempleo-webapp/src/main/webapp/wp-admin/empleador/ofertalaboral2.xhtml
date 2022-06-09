@@ -1,0 +1,293 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/template/layout.xhtml">
+
+	<ui:define name="title">Oferta Laboral</ui:define>
+
+	<ui:define name="content">
+		<h:form id="frm" update="growl">
+			<p:growl id="growl" sticky="false" life="5000" showDetail="false"
+				autoUpdate="true" />
+			<div
+				class="col-lg-12 col-md-12 col-sm-12 container justify-content-center">
+				<div class="card crud-demo">
+					<p:toolbar>
+						<p:toolbarGroup>
+							<p:commandButton value="Agregar" icon="pi pi-plus"
+								actionListener="#{ofertaLaboralBean.openNew}"
+								update=":frm:manage-element-content"
+								oncomplete="PF('manageElementDialog').show()" process="@this"
+								styleClass="ui-button-success" style="margin-right: .5rem">
+								<p:resetInput target=":frm:manage-element-content" />
+							</p:commandButton>
+							<p:commandButton id="delete-elements-button"
+								value="#{ofertaLaboralBean.deleteButtonMessage}"
+								icon="pi pi-trash"
+								actionListener="#{ofertaLaboralBean.deleteSelectedElements}"
+								styleClass="ui-button-danger"
+								disabled="#{!ofertaLaboralBean.hasSelectedElements()}"
+								update="@this">
+								<p:confirm header="Confirmación"
+									message="Eliminar registros seleccionados?"
+									icon="pi pi-exclamation-triangle" />
+							</p:commandButton>
+						</p:toolbarGroup>
+					</p:toolbar>
+					<p:dataTable id="dt-elements" widgetVar="dtElementos" var="element"
+						value="#{ofertaLaboralBean.elements}" reflow="true"
+						styleClass="elements-table"
+						selection="#{ofertaLaboralBean.selectedElements}"
+						rowKey="#{element.id}" paginator="true" rows="10"
+						rowSelectMode="add" paginatorPosition="bottom"
+						emptyMessage="No se encontraron registros">
+						<f:facet name="header">
+							<div class="elements-table-header"></div>
+						</f:facet>
+						<p:ajax event="rowSelect" update=":frm:delete-elements-button" />
+						<p:ajax event="rowUnselect" update=":frm:delete-elements-button" />
+						<p:ajax event="rowSelectCheckbox"
+							update=":frm:delete-elements-button" />
+						<p:ajax event="rowUnselectCheckbox"
+							update=":frm:delete-elements-button" />
+						<p:ajax event="toggleSelect" update=":frm:delete-elements-button" />
+
+						<p:column selectionMode="multiple" exportable="false"
+							style="width:50px;"></p:column>
+
+						<p:column headerText="Titulo de la oferta"
+							sortBy="#{element.remuneracion}">
+							<h:outputText value="#{element.tituloOferta}" />
+						</p:column>
+						<p:column headerText="Remuneracion"
+							sortBy="#{element.remuneracion}">
+							<h:outputText value="#{element.remuneracion}" />
+						</p:column>
+						<p:column headerText="TipoContrato"
+							sortBy="#{element.tipoContrato.nombre}">
+							<h:outputText value="#{element.tipoContrato.nombre}" />
+						</p:column>
+
+
+						<p:column headerText="Provincia"
+							sortBy="#{element.ciudad.provincia.nombre}">
+							<h:outputText value="#{element.ciudad.provincia.nombre}" />
+						</p:column>
+
+						<p:column headerText="Ciudad" sortBy="#{element.ciudad.nombre}">
+							<h:outputText value="#{element.ciudad.nombre}" />
+						</p:column>
+
+						<p:column exportable="false">
+							<p:commandButton icon="pi pi-search"
+								actionListener="#{ofertaLaboralBean.openNew}"
+								update=":frm:manage-element-content-oferta"
+								oncomplete="PF('manageElementDialogSolicitud').show()"
+								styleClass="edit-button rounded-button ui-button-success"
+								process="@this">
+								<f:setPropertyActionListener value="#{element}"
+									target="#{ofertaLaboralBean.selectedElement}" />
+								<p:resetInput target=":frm:manage-element-content-oferta" />
+							</p:commandButton>
+							<p:commandButton icon="pi pi-pencil"
+								update=":frm:manage-element-content"
+								oncomplete="PF('manageElementDialog').show()"
+								styleClass="edit-button rounded-button ui-button-success"
+								process="@this" action="#{ofertaLaboralBean.loadDialog}">
+								<f:setPropertyActionListener value="#{element}"
+									target="#{ofertaLaboralBean.selectedElement}" />
+								<p:resetInput target=":frm:manage-element-content" />
+							</p:commandButton>
+							<p:commandButton class="ui-button-warning rounded-button"
+								icon="pi pi-trash" process="@this"
+								oncomplete="PF('deleteElementDialog').show()">
+								<f:setPropertyActionListener value="#{element}"
+									target="#{ofertaLaboralBean.selectedElement}" />
+							</p:commandButton>
+						</p:column>
+
+					</p:dataTable>
+
+					<p:dialog header="Oferta" showEffect="fade" modal="true"
+						widgetVar="manageElementDialogSolicitud" responsive="true">
+						<p:outputPanel id="manage-element-content-oferta" class="ui-fluid">
+							<p:outputPanel
+								rendered="#{not empty ofertaLaboralBean.selectedElement}">
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Titulo de oferta" />
+									<br /> <label>
+										#{ofertaLaboralBean.selectedElement.tituloOferta} </label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Tipo de contrato" />
+									<br /> <label>
+										#{ofertaLaboralBean.selectedElement.tipoContrato.nombre} </label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Remuneracion" />
+									<br /> <label>
+										#{ofertaLaboralBean.selectedElement.remuneracion} </label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Ciudad" />
+									<br /> <label>
+										#{ofertaLaboralBean.selectedElement.ciudad.nombre} </label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Provincia" />
+									<br /> <label>
+										#{ofertaLaboralBean.selectedElement.ciudad.provincia.nombre} </label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Fecha de publicacion" />
+									<br /> <label>
+										#{ofertaLaboralBean.selectedElement.fechaPublicacion} </label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label"
+										value="Fecha limite de aplicacion" />
+									<br /> <label>
+										#{ofertaLaboralBean.selectedElement.fechaLimiteAplicacion} </label>
+								</div>
+
+							</p:outputPanel>
+						</p:outputPanel>
+
+						<f:facet name="footer">
+														
+								
+							<p:commandButton value="Cancelar" icon="pi pi-times"
+								onclick="PF('manageElementDialogSolicitud').hide()"
+								class="ui-button-secondary" />
+						</f:facet>
+					</p:dialog>
+
+					<p:dialog header="Oferta" showEffect="fade"
+						modal="true" widgetVar="manageElementDialog" responsive="true">
+						<p:outputPanel id="manage-element-content" class="ui-fluid">
+							<p:outputPanel
+								rendered="#{not empty ofertaLaboralBean.selectedElement}">
+								<div class="p-field">
+									<p:outputLabel for="tituloOferta" class="form-label"
+										value="Titulo de la oferta" />
+									<p:inputText id="tituloOferta"
+										value="#{ofertaLaboralBean.selectedElement.tituloOferta}"
+										required="true" requiredMessage="Ingrese titulo de la oferta" />
+								</div>
+								<div class="p-field">
+									<p:outputLabel for="tituloOferta" class="form-label"
+										value="Titulo de la oferta" />
+									<p:inputText id="tituloOferta"
+										value="#{ofertaLaboralBean.selectedElement.tituloOferta}"
+										required="true" requiredMessage="Ingrese titulo de la oferta" />
+								</div>
+								<div class="p-field">
+									<p:outputLabel for="remuneracion" class="form-label"
+										value="Remuneracion" />
+									<p:inputText id="remuneracion"
+										value="#{ofertaLaboralBean.selectedElement.remuneracion}"
+										required="true" requiredMessage="Ingrese numeroRegistro" />
+								</div>
+								<div class="p-field">
+									<p:outputLabel for="contrato" class="form-label"
+										value="Tipo de contrato" />
+									<p:selectOneMenu id="contrato" required="true"
+										requiredMessage="Nivel de instrucción es obligatorio "
+										value="#{ofertaLaboralBean.selectedElement.tipoContrato}"
+										converter="entityConverter" style="width:100%;" dynamic="true">
+										<f:selectItem itemLabel="Seleccione" itemValue="#{null}"
+											noSelectionOption="true" />
+										<f:selectItems value="#{ofertaLaboralBean.contrato}"
+											var="contrato" itemLabel="#{contrato.nombre}"
+											itemValue="#{nivel}" />
+									</p:selectOneMenu>
+								</div>
+								<div class="p-field">
+									<p:outputLabel for="txtLimPublicacion"
+										value="Fecha limite de publicacion" class="form-label" />
+									<p:datePicker id="txtLimPublicacion" monthNavigator="true"
+										yearNavigator="true" showWeek="true" required="true"
+										requiredMessage="Ingrese Fecha de nacimiento"
+										pattern="yyyy-MM-dd"
+										value="#{ofertaLaboralBean.selectedElement.fechaLimiteAplicacion}"
+										converterMessage="Formato debe ser: aaaa-MM-dd" />
+								</div>
+								<div class="p-field">
+									<p:outputLabel for="cmbProvincia" value="Residencia"
+										class="form-label" />
+									<p:selectOneMenu id="cmbProvincia" required="true"
+										requiredMessage="Provincia es obligatorio "
+										value="#{ofertaLaboralBean.selectedProvincia}"
+										converter="entityConverter" style="width:100%;" dynamic="true">
+										<f:selectItem itemLabel="Seleccione" itemValue="#{null}"
+											noSelectionOption="true" />
+										<f:selectItems value="#{ofertaLaboralBean.provincias}"
+											var="provincia" itemLabel="#{provincia.nombre}"
+											itemValue="#{provincia}" />
+										<p:ajax listener="#{ofertaLaboralBean.onProvinciaChange()}"
+											onstart="PF('statusDialog').show()"
+											onsuccess="PF('statusDialog').hide()" update="cmbCiudad" />
+									</p:selectOneMenu>
+
+									<p:selectOneMenu id="cmbCiudad" required="true"
+										requiredMessage="Ciudad es obligatorio "
+										value="#{ofertaLaboralBean.selectedCiudad}"
+										converter="entityConverter" style="width:100%;"
+										disabled="#{ofertaLaboralBean.selectedProvincia == null}">
+										<f:selectItem itemLabel="Seleccione" itemValue="#{null}"
+											noSelectionOption="true" />
+										<f:selectItems value="#{ofertaLaboralBean.ciudades}"
+											var="ciudad" itemLabel="#{ciudad.nombre}"
+											itemValue="#{ciudad}" />
+									</p:selectOneMenu>
+								</div>
+							</p:outputPanel>
+						</p:outputPanel>
+						<f:facet name="footer">
+							<p:commandButton value="Guardar" icon="pi pi-check"
+								actionListener="#{ofertaLaboralBean.saveElement}"
+								update="manage-element-content growl"
+								process="manage-element-content @this" />
+							<p:commandButton value="Cancelar" icon="pi pi-times"
+								onclick="PF('manageElementDialog').hide()"
+								class="ui-button-secondary" />
+						</f:facet>
+					</p:dialog>
+
+					<p:confirmDialog widgetVar="deleteElementDialog" showEffect="fade"
+						width="300" message="Eliminar registro seleccionado?"
+						header="Confirmar" severity="warn">
+						<p:commandButton value="Si" icon="pi pi-check"
+							actionListener="#{ofertaLaboralBean.deleteElement}"
+							process="@this" oncomplete="PF('deleteElementDialog').hide()" />
+						<p:commandButton value="No" type="button"
+							styleClass="ui-button-secondary" icon="pi pi-times"
+							onclick="PF('deleteElementDialog').hide()" />
+					</p:confirmDialog>
+
+					<p:confirmDialog global="true" showEffect="fade" width="300">
+						<p:commandButton value="Si" type="button"
+							styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+						<p:commandButton value="No" type="button"
+							styleClass="ui-confirmdialog-no ui-button-secondary"
+							icon="pi pi-times" />
+					</p:confirmDialog>
+
+
+				</div>
+			</div>
+
+
+			<script>
+				//<![CDATA[
+
+				//]]>
+			</script>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

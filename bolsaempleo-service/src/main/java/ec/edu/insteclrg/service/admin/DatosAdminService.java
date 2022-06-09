@@ -21,6 +21,7 @@ public class DatosAdminService extends GenericCRUDServiceImpl<DatosAdmin, Long> 
 	}
 
 	public Optional<DatosAdmin> buscarPorCedula(String cedula) {
+		//Sort.by(Sort.Direction.ASC
 		return entityRepository.findByCedula(cedula);
 	}
 

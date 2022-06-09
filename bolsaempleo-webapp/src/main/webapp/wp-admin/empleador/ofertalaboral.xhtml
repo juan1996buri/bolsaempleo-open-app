@@ -82,18 +82,16 @@
 							<h:outputText value="#{element.ciudad.nombre}" />
 						</p:column>
 
-						<p:column headerText="Fecha de publicacion"
-							sortBy="#{element.fechaPublicacion}">
-							<h:outputText value="#{element.fechaPublicacion}" />
-						</p:column>
-
-						<p:column headerText="Fecha limite de publicacion"
-							sortBy="#{element.fechaLimiteAplicacion}">
-							<h:outputText value="#{element.fechaLimiteAplicacion}" />
-						</p:column>
-
-
 						<p:column exportable="false">
+							<p:commandButton icon="pi pi-search"
+								actionListener="#{ofertaLaboralBean.openNew}"
+								update=":frm:manage-element-content-oferta"
+								oncomplete="PF('manageElementDialogSolicitud').show()"
+								styleClass="edit-button rounded-button ui-button-success">
+								<f:setPropertyActionListener value="#{element}"
+									target="#{ofertaLaboralBean.selectedElement}" />
+								<p:resetInput target=":frm:manage-element-content-oferta" />
+							</p:commandButton>
 							<p:commandButton icon="pi pi-pencil"
 								update=":frm:manage-element-content"
 								oncomplete="PF('manageElementDialog').show()"
@@ -113,8 +111,75 @@
 
 					</p:dataTable>
 
-					<p:dialog header="Instrucción formal" showEffect="fade"
-						modal="true" widgetVar="manageElementDialog" responsive="true">
+					<p:dialog header="Oferta" showEffect="fade" modal="true"
+						widgetVar="manageElementDialogSolicitud" responsive="true">
+						<p:outputPanel id="manage-element-content-oferta" class="ui-fluid">
+							<p:outputPanel
+								rendered="#{not empty ofertaLaboralBean.selectedElement}">
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Titulo de oferta" />
+									<br /> <label>
+										#{ofertaLaboralBean.selectedElement.tituloOferta} </label>
+								</div>
+								
+								<div class="p-field">
+									<p:panel  header="Logo">										
+										<p:outputLabel rendered="#{not empty ofertaLaboralBean.foto}"
+											style="width:100%;text-align:center;">
+											<img class="img-fluid"
+												src="data:image/png;base64,${ofertaLaboralBean.foto}" />
+										</p:outputLabel>
+									</p:panel>
+								</div>
+
+								
+
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Tipo de contrato" />
+									<br /> <label>
+										#{ofertaLaboralBean.selectedElement.tipoContrato.nombre} </label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Remuneracion" />
+									<br /> <label>
+										#{ofertaLaboralBean.selectedElement.remuneracion} </label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Ciudad" />
+									<br /> <label>
+										#{ofertaLaboralBean.selectedElement.ciudad.nombre} </label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Provincia" />
+									<br /> <label>
+										#{ofertaLaboralBean.selectedElement.ciudad.provincia.nombre} </label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label" value="Fecha de publicacion" />
+									<br /> <label>
+										#{ofertaLaboralBean.selectedElement.fechaPublicacion} </label>
+								</div>
+								<div class="p-field">
+									<p:outputLabel class="form-label"
+										value="Fecha limite de aplicacion" />
+									<br /> <label>
+										#{ofertaLaboralBean.selectedElement.fechaLimiteAplicacion} </label>
+								</div>
+
+							</p:outputPanel>
+						</p:outputPanel>
+
+						<f:facet name="footer">
+
+
+							<p:commandButton value="Cancelar" icon="pi pi-times"
+								onclick="PF('manageElementDialogSolicitud').hide()"
+								class="ui-button-secondary" />
+						</f:facet>
+					</p:dialog>
+
+					<p:dialog header="Ofertas" showEffect="fade" modal="true"
+						widgetVar="manageElementDialog" responsive="true">
 						<p:outputPanel id="manage-element-content" class="ui-fluid">
 							<p:outputPanel
 								rendered="#{not empty ofertaLaboralBean.selectedElement}">
@@ -126,6 +191,18 @@
 										required="true" requiredMessage="Ingrese titulo de la oferta" />
 								</div>
 								<div class="p-field">
+									<p:panel id="pnlFoto" header="Logo">
+										<p:commandButton value="Subir Logo" type="button"
+											icon="pi pi-external-link" onclick="PF('dlgFoto').show()" />
+										<p:outputLabel rendered="#{not empty ofertaLaboralBean.foto}"
+											style="width:100%;text-align:center;">
+											<img class="img-fluid"
+												src="data:image/png;base64,${ofertaLaboralBean.foto}" />
+										</p:outputLabel>
+									</p:panel>
+								</div>
+
+								<div class="p-field">
 									<p:outputLabel for="remuneracion" class="form-label"
 										value="Remuneracion" />
 									<p:inputText id="remuneracion"
@@ -134,7 +211,7 @@
 								</div>
 								<div class="p-field">
 									<p:outputLabel for="contrato" class="form-label"
-										value="Nivel de instrucción" />
+										value="Tipo de contrato" />
 									<p:selectOneMenu id="contrato" required="true"
 										requiredMessage="Nivel de instrucción es obligatorio "
 										value="#{ofertaLaboralBean.selectedElement.tipoContrato}"
@@ -156,11 +233,13 @@
 										value="#{ofertaLaboralBean.selectedElement.fechaLimiteAplicacion}"
 										converterMessage="Formato debe ser: aaaa-MM-dd" />
 								</div>
-								<div class="form-wrapper">
+								<div class="p-field">
+									<p:outputLabel for="cmbProvincia" value="Residencia"
+										class="form-label" />
 									<p:selectOneMenu id="cmbProvincia" required="true"
 										requiredMessage="Provincia es obligatorio "
 										value="#{ofertaLaboralBean.selectedProvincia}"
-										converter="entityConverter" style="width:100%;">
+										converter="entityConverter" style="width:100%;" dynamic="true">
 										<f:selectItem itemLabel="Seleccione" itemValue="#{null}"
 											noSelectionOption="true" />
 										<f:selectItems value="#{ofertaLaboralBean.provincias}"
@@ -183,16 +262,8 @@
 											itemValue="#{ciudad}" />
 									</p:selectOneMenu>
 								</div>
-
-
-
-
-
-
-
 							</p:outputPanel>
 						</p:outputPanel>
-
 						<f:facet name="footer">
 							<p:commandButton value="Guardar" icon="pi pi-check"
 								actionListener="#{ofertaLaboralBean.saveElement}"
@@ -202,9 +273,29 @@
 								onclick="PF('manageElementDialog').hide()"
 								class="ui-button-secondary" />
 						</f:facet>
-
 					</p:dialog>
 
+					<p:dialog header="Foto" widgetVar="dlgFoto" minHeight="40"
+						width="350" showEffect="fade" modal="true">
+						<p class="p-m-0">
+							<p:inputTextarea id="txtFoto" rows="5" autoResize="false"
+								value="#{ofertaLaboralBean.fotoTmp}"
+								placeholder="Convierta la foto a BASE64, luego copie el texto y pegue aquí" />
+							<small class="p-d-block">Para convertir a BASE64 click </small> <a
+								href="https://www.browserling.com/tools/file-to-base64"
+								target="_blank">AQUÍ</a>
+						</p>
+						<f:facet name="footer">
+							<p:commandButton value="Aceptar" icon="pi pi-check"
+								actionListener="#{ofertaLaboralBean.changePic()}"
+								update="frm:pnlFoto" process="@this txtFoto"
+								onclick="PF('dlgFoto').hide()" />
+
+							<p:commandButton value="Cancelar" icon="pi pi-times"
+								onclick="PF('dlgFoto').hide()" class="ui-button-secondary"
+								immediate="true" />
+						</f:facet>
+					</p:dialog>
 					<p:confirmDialog widgetVar="deleteElementDialog" showEffect="fade"
 						width="300" message="Eliminar registro seleccionado?"
 						header="Confirmar" severity="warn">
